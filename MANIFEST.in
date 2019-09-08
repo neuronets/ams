@@ -1,0 +1,3 @@
+include versioneer.py
+include ams/_version.py
+include ams/*.h5
