@@ -17,7 +17,10 @@ RUN apt-get update \
 
 WORKDIR /opt/ams
 COPY [".", "."]
-RUN pip install --no-cache-dir --editable .[cpu]
+RUN pip install --no-cache-dir --editable .[cpu] \
+    && git config user.email "ams" \
+    && git config user.name "ams" \
+    && git-annex get --quiet .
 
 ENV FREESURFER_HOME="/opt/ams/freesurfer"
 ENV PATH="$FREESURFER_HOME/bin:$PATH"
