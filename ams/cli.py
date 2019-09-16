@@ -1,5 +1,6 @@
 from pathlib import Path
 import subprocess
+import tempfile
 import warnings
 warnings.simplefilter(action='ignore', category=FutureWarning)
 
@@ -29,15 +30,16 @@ _default_model = _here / 'meningioma_T1wc_128iso_v1.h5'
 def predict(*, infile, outprefix, batch_size, threshold):
     """Segment meningiomas in a 3D T1-weighted contrast-enhanced MRI using a trained deep neural network.
 
-    CAUTION: this tool is not a medical product and should not be used for diagnosis.
+    CAUTION: this tool is not a medical product and is only intended for research purposes.
 
     The predictions are saved to OUTPREFIX_* with the same extension as the input file.
 
     If you encounter out-of-memory issues, use a lower batch size value.
     """
 
-    msg = "CAUTION: this tool is not a medical product and should not be used for diagnosis."
-    print('\n', '*' * len(msg), '\n', msg, '\n', '*' * len(msg), '\n')
+    msg = "CAUTION: this tool is not a medical product and is only intended for research purposes."
+    msg = '\n' + '*' * len(msg) + '\n' + msg + '\n' + '*' * len(msg) + '\n'
+    click.echo(click.style(msg, fg='red'))
 
     try:
         latest = etelemetry.get_project("neuronets/kwyk")

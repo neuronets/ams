@@ -2,3 +2,4 @@ Dockerfile
 Dockerfile.gpu
 __pycache__
 *.pyc
+*.egg-info

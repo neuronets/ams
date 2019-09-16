@@ -1,4 +1,4 @@
-FROM ubuntu:16.04
+FROM ubuntu:18.04
 ARG DEBIAN_FRONTEND="noninteractive"
 ENV LANG="C.UTF-8" \
     LC_ALL="C.UTF-8"
@@ -10,6 +10,7 @@ RUN apt-get update \
         git \
         libgomp1 \
         python3 \
+        python3-distutils \
     && rm -rf /var/lib/apt/lists/* \
     && curl -fsSL https://bootstrap.pypa.io/get-pip.py | python3 - \
     && ln -s $(which python3) /usr/local/bin/python
