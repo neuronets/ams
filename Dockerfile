@@ -8,6 +8,7 @@ RUN apt-get update \
         ca-certificates \
         curl \
         git \
+        git-annex \
         libgomp1 \
         python3 \
         python3-distutils \
