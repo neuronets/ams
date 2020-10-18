@@ -16,18 +16,15 @@ from ams import __version__
 _REQUIRED_SHAPE = (256, 256, 256)
 _BLOCK_SHAPE = (128, 128, 128)
 
-_here = Path(__file__).parent
-_default_model = _here / 'meningioma_T1wc_128iso_v1.h5'
-
 
 @click.command()
 @click.argument('infile')
 @click.argument('outprefix')
 @click.option('-b', '--batch-size', type=int, default=1, help='Batch size during prediction.')
 @click.option('-t', '--threshold', type=float, default=0.3, help='Threshold for binarization of predictions.')
-# @click.option('-m', '--model-file', type=click.Path(exists=True), default=_default_model, help='Path to Keras model.')
+@click.option('-m', '--model-file', type=click.Path(exists=True), envvar='AMS_MODEL_FILE', help='Path to Keras model.')
 @click.version_option(version=__version__)
-def predict(*, infile, outprefix, batch_size, threshold):
+def predict(*, infile, outprefix, batch_size, threshold, model_file):
     """Segment meningiomas in a 3D T1-weighted contrast-enhanced MRI using a trained deep neural network.
 
     CAUTION: this tool is not a medical product and is only intended for research purposes.
@@ -47,8 +44,8 @@ def predict(*, infile, outprefix, batch_size, threshold):
         print("Could not check for version updates: ", e)
     else:
         if latest and 'version' in latest:
-            print("Your version: {0} Latest version: {1}".format(
-                __version__, latest["version"]))
+            print(f"Your version: {__version__}")
+            print(f"Latest version: {latest['version']}\n")
 
     _orig_infile = infile
 
@@ -80,7 +77,7 @@ def predict(*, infile, outprefix, batch_size, threshold):
     x = x[..., None]  # Add grayscale channel.
 
     # Run forward pass of model.
-    model = tf.keras.models.load_model(_default_model, compile=False)
+    model = tf.keras.models.load_model(model_file, compile=False)
     y_ = model.predict(x, batch_size=batch_size, verbose=1)
     y_ = np.squeeze(y_, axis=-1)
 
@@ -100,16 +97,16 @@ def predict(*, infile, outprefix, batch_size, threshold):
 
 def _conform(input, output):
     """Conform volume using FreeSurfer."""
-    subprocess.run(['mri_convert', '--conform', input, output], check=True)
+    subprocess.run(['mri_convert.bin', '--conform', input, output], check=True)
     return output
 
 
 def _reslice(input, output, reference, labels=False):
     """Reslice volume using FreeSurfer."""
     if labels:
-        subprocess.run(['mri_convert', '-rl', reference, '-rt', 'nearest', '-ns', '1',
+        subprocess.run(['mri_convert.bin', '-rl', reference, '-rt', 'nearest', '-ns', '1',
                         input, output],
                        check=True)
     else:
-        subprocess.run(['mri_convert', '-rl', reference, input, output], check=True)
+        subprocess.run(['mri_convert.bin', '-rl', reference, input, output], check=True)
     return output

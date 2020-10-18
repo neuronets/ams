@@ -1,29 +1,27 @@
-FROM ubuntu:18.04
+FROM python:3.8-slim
 ARG DEBIAN_FRONTEND="noninteractive"
 ENV LANG="C.UTF-8" \
     LC_ALL="C.UTF-8"
-
 RUN apt-get update \
     && apt-get install --yes --quiet --no-install-recommends \
         ca-certificates \
-        curl \
         git \
         git-annex \
         libgomp1 \
-        python3 \
-        python3-distutils \
-    && rm -rf /var/lib/apt/lists/* \
-    && curl -fsSL https://bootstrap.pypa.io/get-pip.py | python3 - \
-    && ln -s $(which python3) /usr/local/bin/python
+    && rm -rf /var/lib/apt/lists/*
 
-WORKDIR /opt/ams
-COPY [".", "."]
-RUN pip install --no-cache-dir --editable .[cpu] \
+WORKDIR /opt/neuronets/trained-models
+ENV AMS_MODEL_FILE="/opt/neuronets/trained-models/models/sig/ams/meningioma_T1wc_128iso_v1.h5"
+RUN git clone https://github.com/neuronets/trained-models.git . \
     && git config user.email "ams" \
     && git config user.name "ams" \
-    && git-annex get --quiet .
+    && git-annex get "$AMS_MODEL_FILE"
 
-ENV FREESURFER_HOME="/opt/ams/freesurfer"
+WORKDIR /opt/neuronets/ams
+COPY . .
+RUN pip install --use-feature=2020-resolver --no-cache-dir --editable .[cpu]
+
+ENV FREESURFER_HOME="/opt/neuronets/ams/freesurfer"
 ENV PATH="$FREESURFER_HOME/bin:$PATH"
 
 WORKDIR /data
