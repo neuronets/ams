@@ -1,5 +1,7 @@
 # Automated Meningioma Segmentation
 
+![Docker Pulls](https://img.shields.io/docker/pulls/neuronets/ams)
+
 ![In-site segmentation results](/images/sample.png) <sub>__Figure__: Example of model outputs on a T1-weighted, contrast-enhanced magnetic resonance image. The structural scan is [available online](http://brainbox.pasteur.fr/mri/?url=https://dl.dropbox.com/sh/71jbelduefu41xs/AAAOa3oh_bVMxdFsmN965kGDa/case_057_2.nii.gz). Runtime on CPU was under 2 minutes.</sub>
 
 ```diff
@@ -23,13 +25,14 @@ singularity pull docker://neuronets/ams:latest-gpu
 You have a few options when running the image. To see them call help.
 
 ```
-singularity run -B $(pwd):/data -W /data --nv ams_latest-gpu.sif --help
+singularity run --cleanenv --bind $(pwd):/data -W /data --nv ams_latest-gpu.sif --help
 ```
 
 Here is an example.
 
 ```
-singularity run -B $(pwd):/data -W /data --nv ams_latest-gpu.sif T1_001.nii.gz output
+singularity run --cleanenv --bind $(pwd):/data -W /data --nv \
+    ams_latest-gpu.sif T1_001.nii.gz output
 ```
 
 This will generate two files `output.nii.gz` and `output_orig.nii.gz`. The first is the mask in conformed FreeSurfer space. The second is the mask in the original input space.

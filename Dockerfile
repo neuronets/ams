@@ -15,10 +15,11 @@ ENV AMS_MODEL_FILE="/opt/neuronets/trained-models/models/sig/ams/meningioma_T1wc
 RUN git clone https://github.com/neuronets/trained-models.git . \
     && git config user.email "ams" \
     && git config user.name "ams" \
-    && git-annex get "$AMS_MODEL_FILE"
+    && git-annex get --quiet "$AMS_MODEL_FILE"
 
 WORKDIR /opt/neuronets/ams
 COPY . .
+# Only difference between this and gpu Dockerfile is this line.
 RUN pip install --use-feature=2020-resolver --no-cache-dir --editable .[cpu]
 
 ENV FREESURFER_HOME="/opt/neuronets/ams/freesurfer"

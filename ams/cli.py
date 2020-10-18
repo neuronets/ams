@@ -39,7 +39,7 @@ def predict(*, infile, outprefix, batch_size, threshold, model_file):
     click.echo(click.style(msg, fg='red'))
 
     try:
-        latest = etelemetry.get_project("neuronets/kwyk")
+        latest = etelemetry.get_project("neuronets/ams")
     except RuntimeError as e:
         print("Could not check for version updates: ", e)
     else:
