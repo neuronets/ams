@@ -1,6 +1,6 @@
 # Automated Meningioma Segmentation
 
-![Docker Pulls](https://img.shields.io/docker/pulls/neuronets/ams)
+[![Docker Pulls](https://img.shields.io/docker/pulls/neuronets/ams)](https://hub.docker.com/r/neuronets/ams)
 
 ![In-site segmentation results](/images/sample.png) <sub>__Figure__: Example of model outputs on a T1-weighted, contrast-enhanced magnetic resonance image. The structural scan is [available online](http://brainbox.pasteur.fr/mri/?url=https://dl.dropbox.com/sh/71jbelduefu41xs/AAAOa3oh_bVMxdFsmN965kGDa/case_057_2.nii.gz). Runtime on CPU was under 2 minutes.</sub>
 
