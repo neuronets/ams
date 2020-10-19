@@ -19,8 +19,12 @@ RUN git clone https://github.com/neuronets/trained-models.git . \
 
 WORKDIR /opt/neuronets/ams
 COPY . .
-# Only difference between this and gpu Dockerfile is this line.
+# Only difference between this and gpu Dockerfile is this line (and base image).
 RUN pip install --use-feature=2020-resolver --no-cache-dir --editable .[cpu]
+
+# Convert to TFLITE.
+ENV AMS_MODEL_FILE_TFLITE="/opt/neuronets/trained-models/models/sig/ams/meningioma_T1wc_128iso_v1_tflite"
+RUN python ./scrtipts/convert_to_tflite.py "$AMS_MODEL_FILE" "$AMS_MODEL_FILE_TFLITE"
 
 ENV FREESURFER_HOME="/opt/neuronets/ams/freesurfer"
 ENV PATH="$FREESURFER_HOME/bin:$PATH"
